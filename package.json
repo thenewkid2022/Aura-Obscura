@@ -8,6 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "build:web": "npx expo export:web",
+    "build:vercel": "EXPO_USE_DEV_SERVER=1 npx expo export:web --clear",
     "build": "npx expo export:web",
     "build:android": "eas build --platform android",
     "build:ios": "eas build --platform ios",

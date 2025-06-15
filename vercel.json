@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npx expo export --platform web",
+  "buildCommand": "npm run build:vercel",
   "outputDirectory": "dist",
   "framework": null,
   "rewrites": [
@@ -18,5 +18,6 @@
         }
       ]
     }
-  ]
+  ],
+  "installCommand": "npm install --legacy-peer-deps"
 } 
