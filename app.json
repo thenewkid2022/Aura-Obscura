@@ -1,0 +1,53 @@
+{
+  "expo": {
+    "name": "Aura Obscura",
+    "slug": "aura-obscura",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#4C1F1F"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.auraobscura.app",
+      "buildNumber": "1.0.0",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Diese App benötigt Zugriff auf die Kamera, um Produktbilder zu machen.",
+        "NSPhotoLibraryUsageDescription": "Diese App benötigt Zugriff auf die Fotobibliothek, um Produktbilder auszuwählen."
+      }
+    },
+    "android": {
+      "package": "com.auraobscura.app",
+      "versionCode": 1,
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "web": {
+      "bundler": "metro",
+      "favicon": "./assets/logo.png",
+      "name": "Aura Obscura - Exklusive Parfums",
+      "shortName": "Aura Obscura",
+      "description": "Entdecken Sie seltene, exklusive Parfums und handverlesene Decants aus den feinsten Luxusmarken der Welt.",
+      "lang": "de",
+      "scope": "/",
+      "startUrl": "/",
+      "display": "standalone",
+      "orientation": "portrait",
+      "themeColor": "#4C1F1F",
+      "backgroundColor": "#4C1F1F"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "your-project-id-here"
+      }
+    }
+  }
+} 
