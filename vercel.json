@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build:vercel-minimal",
+  "buildCommand": "./vercel-build.sh",
   "outputDirectory": "dist",
   "framework": null,
   "rewrites": [
