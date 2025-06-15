@@ -10,6 +10,7 @@
     "build:web": "npx expo export:web",
     "build:vercel": "npx expo export --platform web",
     "build:vercel-simple": "npx expo export --platform web --clear --no-minify",
+    "build:vercel-minimal": "npx expo export --platform web --clear --no-minify --no-assets",
     "build": "npx expo export:web",
     "build:android": "eas build --platform android",
     "build:ios": "eas build --platform ios",

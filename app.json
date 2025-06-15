@@ -14,10 +14,6 @@
       "image": "./assets/icon.png",
       "backgroundColor": "#4C1F1F"
     },
-    "assetBundlePatterns": [
-      "assets/**/*",
-      "src/**/*"
-    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.auraobscura.app",
