@@ -1,5 +1,9 @@
 module.exports = function(api) {
   api.cache(true);
+  
+  // Vercel-spezifische Konfiguration
+  const isVercel = process.env.VERCEL === '1';
+  
   return {
     presets: ['babel-preset-expo'],
     plugins: [
@@ -19,6 +23,16 @@ module.exports = function(api) {
           },
         },
       ],
+      // Asset-Plugin für Vercel
+      ...(isVercel ? [
+        [
+          'transform-assets',
+          {
+            extensions: ['png', 'jpg', 'jpeg', 'gif', 'svg'],
+            name: 'static/media/[name].[hash:8].[ext]',
+          },
+        ],
+      ] : []),
     ],
   };
 }; 
