@@ -16,14 +16,14 @@ export const MainTabNavigator = () => (
     screenOptions={({ route }) => ({
       headerShown: false,
       tabBarStyle: {
-        backgroundColor: Colors.backgroundPrimary,
+        backgroundColor: Colors.tabBarBackground,
         borderTopColor: Colors.border,
         height: 70,
         paddingBottom: 10,
         paddingTop: 6,
       },
-      tabBarActiveTintColor: Colors.secondary,
-      tabBarInactiveTintColor: Colors.textMuted,
+      tabBarActiveTintColor: Colors.tabBarActive,
+      tabBarInactiveTintColor: Colors.tabBarInactive,
       tabBarLabelStyle: {
         fontSize: 12,
         fontWeight: '600',

@@ -16,7 +16,7 @@ import { Button } from '../components/ui/Button';
 import { ProductCard } from '../components/ui/ProductCard';
 import { Product } from '../types';
 
-const { width, height } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
 interface HomeScreenProps {
   navigation: any;
@@ -186,7 +186,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             <ProductCard
               product={product}
               onPress={handleProductPress}
-              onFavoritePress={(product) => console.log('Favorite:', product.name)}
+              onFavoritePress={(product) => {
+                // TODO: Implement favorite functionality
+              }}
             />
           </View>
         ))}
@@ -239,7 +241,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           </Text>
           <Button
             title="Newsletter abonnieren"
-            onPress={() => console.log('Newsletter signup')}
+            onPress={() => {
+              // TODO: Implement newsletter signup
+            }}
             variant="secondary"
             size="medium"
             style={styles.newsletterButton}
@@ -257,27 +261,27 @@ const styles = StyleSheet.create({
   },
   
   heroContainer: {
-    height: height * 0.7,
-    marginBottom: 24,
+    height: height * 0.6,
+    marginBottom: 20,
   },
   
   heroGradient: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
   },
   
   heroContent: {
     alignItems: 'center',
-    maxWidth: 400,
+    maxWidth: 350,
   },
   
   heroLogo: {
-    width: 120,
-    height: 120,
-    marginBottom: 24,
-    borderRadius: 60,
+    width: 100,
+    height: 100,
+    marginBottom: 20,
+    borderRadius: 50,
     shadowColor: Colors.black,
     shadowOffset: {
       width: 0,
@@ -289,27 +293,27 @@ const styles = StyleSheet.create({
   },
   
   heroTitle: {
-    ...Typography.h1,
-    color: Colors.white,
+    ...Typography.mobileTitle,
+    color: Colors.textPrimary,
     textAlign: 'center',
-    marginBottom: 16,
-    lineHeight: 56,
+    marginBottom: 12,
+    lineHeight: 32,
   },
   
   heroSubtitle: {
-    ...Typography.bodyLarge,
+    ...Typography.mobileSubtitle,
     color: Colors.textSecondary,
     textAlign: 'center',
-    marginBottom: 32,
-    lineHeight: 24,
+    marginBottom: 24,
+    lineHeight: 20,
   },
   
   heroButton: {
-    minWidth: 200,
+    minWidth: 180,
   },
   
   section: {
-    marginBottom: 32,
+    marginBottom: 24,
     paddingHorizontal: 16,
   },
   
@@ -317,7 +321,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   
   sectionTitleContainer: {
@@ -325,13 +329,13 @@ const styles = StyleSheet.create({
   },
   
   sectionTitle: {
-    ...Typography.h3,
-    color: Colors.white,
-    marginBottom: 4,
+    ...Typography.h4,
+    color: Colors.textPrimary,
+    marginBottom: 2,
   },
   
   sectionSubtitle: {
-    ...Typography.bodySmall,
+    ...Typography.caption,
     color: Colors.textMuted,
   },
   
@@ -340,17 +344,17 @@ const styles = StyleSheet.create({
   },
   
   productCardContainer: {
-    marginRight: 16,
+    marginRight: 12,
   },
   
   newsletterSection: {
     marginHorizontal: 16,
-    marginBottom: 32,
+    marginBottom: 24,
   },
   
   newsletterContainer: {
-    borderRadius: 16,
-    padding: 24,
+    borderRadius: 12,
+    padding: 20,
     alignItems: 'center',
   },
   
@@ -358,19 +362,19 @@ const styles = StyleSheet.create({
     ...Typography.h4,
     color: Colors.white,
     textAlign: 'center',
-    marginTop: 16,
-    marginBottom: 8,
+    marginTop: 12,
+    marginBottom: 6,
   },
   
   newsletterSubtitle: {
-    ...Typography.body,
+    ...Typography.bodySmall,
     color: Colors.textSecondary,
     textAlign: 'center',
-    marginBottom: 24,
-    lineHeight: 22,
+    marginBottom: 20,
+    lineHeight: 18,
   },
   
   newsletterButton: {
-    minWidth: 200,
+    minWidth: 180,
   },
 }); 

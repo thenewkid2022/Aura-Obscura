@@ -7,6 +7,11 @@
     "userInterfaceStyle": "dark",
     "splash": {
       "resizeMode": "contain",
+      "backgroundColor": "#4C1F1F",
+      "image": "./assets/splash.png"
+    },
+    "icon": {
+      "image": "./assets/icon.png",
       "backgroundColor": "#4C1F1F"
     },
     "assetBundlePatterns": [
@@ -18,16 +23,41 @@
       "buildNumber": "1.0.0",
       "infoPlist": {
         "NSCameraUsageDescription": "Diese App benötigt Zugriff auf die Kamera, um Produktbilder zu machen.",
-        "NSPhotoLibraryUsageDescription": "Diese App benötigt Zugriff auf die Fotobibliothek, um Produktbilder auszuwählen."
+        "NSPhotoLibraryUsageDescription": "Diese App benötigt Zugriff auf die Fotobibliothek, um Produktbilder auszuwählen.",
+        "NSFaceIDUsageDescription": "Diese App verwendet Face ID für sichere Anmeldung.",
+        "UIBackgroundModes": ["remote-notification"],
+        "UIRequiresFullScreen": true
+      },
+      "config": {
+        "usesNonExemptEncryption": false
       }
     },
     "android": {
       "package": "com.auraobscura.app",
       "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#4C1F1F"
+      },
       "permissions": [
         "CAMERA",
         "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE"
+        "WRITE_EXTERNAL_STORAGE",
+        "VIBRATE",
+        "RECEIVE_BOOT_COMPLETED",
+        "WAKE_LOCK"
+      ],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "auraobscura"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
       ]
     },
     "web": {
@@ -43,6 +73,24 @@
       "orientation": "portrait",
       "themeColor": "#4C1F1F",
       "backgroundColor": "#4C1F1F"
+    },
+    "plugins": [
+      "expo-notifications",
+      "expo-splash-screen",
+      "expo-updates"
+    ],
+    "notification": {
+      "icon": "./assets/notification-icon.png",
+      "color": "#4C1F1F",
+      "iosDisplayInForeground": true,
+      "androidMode": "default",
+      "androidCollapsedTitle": "Aura Obscura"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/your-project-id"
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
     },
     "extra": {
       "eas": {

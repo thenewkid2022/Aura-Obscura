@@ -8,17 +8,33 @@ Eine luxuriöse mobile Shopping-App für seltene, exklusive Parfums und handverl
 - **Stil**: Mystisch-edles, minimalistisches Design
 - **Typografie**: Playfair Display/Cinzel für Headlines, Lato/Libre Baskerville für Body
 
-## 🚀 Deployment auf Vercel
+## 📱 Mobile Optimierungen
 
-### Voraussetzungen
+### Neue Features
+- **Haptic Feedback**: Vibration bei Interaktionen für bessere UX
+- **Responsive Design**: Automatische Anpassung an verschiedene Bildschirmgrößen
+- **Touch-Optimierung**: Größere Touch-Targets und bessere Accessibility
+- **Performance**: Optimierte Bilder und Animationen
+- **Push Notifications**: Benachrichtigungen für neue Drops und Angebote
+
+### Mobile-spezifische Verbesserungen
+- Reduzierte Schriftgrößen für mobile Lesbarkeit
+- Optimierte Abstände und Padding
+- Verbesserte Navigation und Gesten
+- Mobile-optimierte Produktkarten
+- Haptic Feedback bei allen Interaktionen
+
+## 🚀 Deployment
+
+### Web Deployment auf Vercel
+
+#### Voraussetzungen
 
 1. **GitHub Repository**: `Aura-Obscura`
 2. **Vercel Account**: [vercel.com](https://vercel.com)
 3. **Domain**: `aura-obscura.com`
 
-### Deployment-Schritte
-
-#### 1. GitHub Repository vorbereiten
+#### Deployment-Schritte
 
 ```bash
 # Alle Änderungen committen
@@ -26,8 +42,6 @@ git add .
 git commit -m "Prepare for Vercel deployment"
 git push origin main
 ```
-
-#### 2. Vercel Deployment
 
 1. **Vercel Dashboard öffnen**: [vercel.com/dashboard](https://vercel.com/dashboard)
 2. **"New Project" klicken**
@@ -38,35 +52,84 @@ git push origin main
    - **Output Directory**: `web-build`
    - **Install Command**: `npm install`
 
-#### 3. Umgebungsvariablen (optional)
+### Mobile App Deployment
 
-Falls später Backend-Integration hinzugefügt wird:
+#### iOS App Store
+```bash
+# iOS Build erstellen
+npm run build:ios
 
-```env
-REACT_APP_API_URL=your-api-url
-REACT_APP_STRIPE_PUBLIC_KEY=your-stripe-key
+# App Store Deployment
+eas submit --platform ios
 ```
 
-#### 4. Domain konfigurieren
+#### Google Play Store
+```bash
+# Android Build erstellen
+npm run build:android
 
-1. **Vercel Dashboard** → **Settings** → **Domains**
-2. **Domain hinzufügen**: `aura-obscura.com`
-3. **DNS-Einstellungen** bei Ihrem Domain-Provider konfigurieren
+# Play Store Deployment
+eas submit --platform android
+```
 
-### Lokale Entwicklung
+## 🛠 Entwicklung
 
+### Voraussetzungen
+- Node.js 18+
+- Expo CLI
+- iOS Simulator (für iOS Entwicklung)
+- Android Studio (für Android Entwicklung)
+
+### Installation
 ```bash
 # Dependencies installieren
 npm install
 
-# Entwicklungsserver starten
-npm start
+# Expo CLI installieren (falls nicht vorhanden)
+npm install -g @expo/cli
+```
 
-# Web-Version starten
+### Entwicklungsserver starten
+```bash
+# Web-Version
 npm run web
 
-# Web-Build erstellen
-npm run build:web
+# iOS Simulator
+npm run ios
+
+# Android Emulator
+npm run android
+
+# Expo Go App (alle Plattformen)
+npm start
+```
+
+### Mobile-spezifische Befehle
+```bash
+# iOS Preview mit Tunnel
+npm run preview:ios
+
+# Android Preview mit Tunnel
+npm run preview:android
+
+# Mobile Builds
+npm run build:ios
+npm run build:android
+npm run build:all
+```
+
+### Testing
+```bash
+# Tests ausführen
+npm test
+
+# Tests im Watch-Modus
+npm run test:watch
+
+# Code-Qualität prüfen
+npm run lint
+npm run lint:fix
+npm run type-check
 ```
 
 ## 📱 Features
@@ -76,13 +139,18 @@ npm run build:web
 - **Warenkorb**: Vollständiger Checkout-Flow
 - **Konto**: Login-System (vorbereitet)
 - **Navigation**: Bottom Tabs (Home, Shop, Favoriten, Konto, Kontakt)
+- **Mobile Features**: Haptic Feedback, Push Notifications, Responsive Design
 
 ## 🛠 Technologie-Stack
 
 - **Frontend**: React Native mit Expo
 - **Navigation**: React Navigation
 - **Styling**: React Native StyleSheet
-- **Deployment**: Vercel
+- **Animationen**: React Native Reanimated
+- **Bilder**: React Native Fast Image
+- **Haptic Feedback**: Expo Haptics
+- **Push Notifications**: Expo Notifications
+- **Deployment**: Vercel (Web), EAS Build (Mobile)
 - **Domain**: aura-obscura.com
 
 ## 📦 Projektstruktur
@@ -97,8 +165,12 @@ Aura Obscura/
 │   └── types/            # TypeScript-Definitionen
 ├── assets/               # Bilder & Assets
 ├── app.json             # Expo-Konfiguration
+├── eas.json             # EAS Build-Konfiguration
 ├── package.json         # Dependencies
 ├── vercel.json          # Vercel-Konfiguration
+├── .eslintrc.js         # ESLint-Konfiguration
+├── .prettierrc          # Prettier-Konfiguration
+├── jest.config.js       # Jest-Konfiguration
 └── README.md            # Diese Datei
 ```
 
@@ -110,6 +182,8 @@ Aura Obscura/
 4. **Push Notifications**: Expo Notifications
 5. **Community-Feed**: Social Features
 6. **Newsletter**: E-Mail-Integration
+7. **Analytics**: Firebase Analytics
+8. **Crash Reporting**: Sentry Integration
 
 ## 📞 Support
 

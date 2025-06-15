@@ -37,6 +37,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     return `${price.toFixed(2)} €`;
   };
 
+  const handlePress = () => {
+    onPress(product);
+  };
+
+  const handleFavoritePress = () => {
+    onFavoritePress?.(product);
+  };
+
+  const handleAddToCart = () => {
+    onAddToCart?.(product);
+  };
+
   const renderBadges = () => (
     <View style={styles.badgesContainer}>
       {product.isNew && (
@@ -46,15 +58,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       )}
       {product.isLimited && (
         <View style={[styles.badge, styles.limitedBadge]}>
-          <Text style={styles.badgeText}>Limit.</Text>
+          <Text style={styles.badgeText}>Limitiert</Text>
         </View>
       )}
       {product.isExclusive && (
         <View style={[styles.badge, styles.exclusiveBadge]}>
-          <Text style={styles.badgeText}>Exkl.</Text>
+          <Text style={styles.badgeText}>Exklusiv</Text>
         </View>
       )}
-      {product.type === 'decant' && showDecantBadge && (
+      {showDecantBadge && product.type === 'decant' && (
         <View style={[styles.badge, styles.decantBadge]}>
           <Text style={styles.badgeText}>Decant</Text>
         </View>
@@ -65,32 +77,30 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const renderAvailability = () => {
     if (product.availability <= 0) {
       return (
-        <Text style={[styles.availability, styles.outOfStock]}>
-          Ausverkauft
-        </Text>
+        <View style={[styles.availabilityBadge, styles.outOfStockBadge]}>
+          <Text style={styles.availabilityText}>Ausverkauft</Text>
+        </View>
       );
     }
-    if (product.availability <= 5) {
+    
+    if (product.availability <= 3) {
       return (
-        <Text style={[styles.availability, styles.lowStock]}>
-          Nur {product.availability} verfügbar
-        </Text>
+        <View style={[styles.availabilityBadge, styles.lowStockBadge]}>
+          <Text style={styles.availabilityText}>Nur noch {product.availability}</Text>
+        </View>
       );
     }
+    
     return null;
-  };
-
-  const handleAddToCart = () => {
-    if (onAddToCart) {
-      onAddToCart(product);
-    }
   };
 
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={() => onPress(product)}
-      activeOpacity={0.9}
+      onPress={handlePress}
+      activeOpacity={0.8}
+      accessibilityRole="button"
+      accessibilityLabel={`${product.brand} ${product.name} - ${formatPrice(product.price)}`}
     >
       <View style={styles.imageContainer}>
         <Image
@@ -105,15 +115,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         
         {renderBadges()}
         
+        {renderAvailability()}
+        
         {onFavoritePress && (
           <TouchableOpacity
             style={styles.favoriteButton}
-            onPress={() => onFavoritePress(product)}
+            onPress={handleFavoritePress}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
             <Ionicons
               name={isFavorite ? 'heart' : 'heart-outline'}
-              size={20}
+              size={24}
               color={isFavorite ? Colors.error : Colors.white}
             />
           </TouchableOpacity>
@@ -128,42 +140,28 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {product.name}
         </Text>
         
+        <View style={styles.details}>
+          <Text style={styles.volume}>{product.volume}</Text>
+          <Text style={styles.concentration}>{product.concentration}</Text>
+        </View>
+
         <View style={styles.priceContainer}>
-          {product.originalPrice && product.originalPrice > product.price ? (
-            <View style={styles.priceRow}>
-              <Text style={styles.originalPrice}>
-                {formatPrice(product.originalPrice)}
-              </Text>
-              <Text style={styles.price}>
-                {formatPrice(product.price)}
-              </Text>
-            </View>
-          ) : (
-            <Text style={styles.price}>
-              {formatPrice(product.price)}
+          <Text style={styles.price}>{formatPrice(product.price)}</Text>
+          {product.originalPrice && (
+            <Text style={styles.originalPrice}>
+              {formatPrice(product.originalPrice)}
             </Text>
           )}
         </View>
-
-        {renderAvailability()}
-
-        {product.rating > 0 && (
-          <View style={styles.ratingContainer}>
-            <Ionicons name="star" size={12} color={Colors.secondary} />
-            <Text style={styles.rating}>
-              {product.rating.toFixed(1)} ({product.reviewCount})
-            </Text>
-          </View>
-        )}
 
         {onAddToCart && product.availability > 0 && (
           <TouchableOpacity
             style={styles.addToCartButton}
             onPress={handleAddToCart}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
           >
-            <Ionicons name="add" size={16} color={Colors.white} />
-            <Text style={styles.addToCartText}>In den Warenkorb</Text>
+            <Ionicons name="add" size={20} color={Colors.white} />
+            <Text style={styles.addToCartText}>Zum Warenkorb</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -178,8 +176,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 16,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: Colors.border,
     elevation: 4,
-    shadowColor: Colors.black,
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 8,
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
   badge: {
     paddingHorizontal: 6,
     paddingVertical: 2,
-    borderRadius: 4,
+    borderRadius: 6,
   },
   
   newBadge: {
@@ -260,57 +260,67 @@ const styles = StyleSheet.create({
   },
   
   name: {
-    ...Typography.bodySmall,
+    ...Typography.mobileSubtitle,
     color: Colors.textPrimary,
-    marginBottom: 8,
+    marginBottom: 6,
     lineHeight: 18,
   },
   
-  priceContainer: {
-    marginBottom: 4,
+  details: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
   },
   
-  priceRow: {
+  volume: {
+    ...Typography.caption,
+    color: Colors.textMuted,
+  },
+  
+  concentration: {
+    ...Typography.caption,
+    color: Colors.textMuted,
+  },
+  
+  priceContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    marginBottom: 8,
   },
   
   price: {
     ...Typography.price,
-    color: Colors.secondary,
-    fontSize: 16,
+    color: Colors.textPrimary,
+    marginRight: 8,
   },
   
   originalPrice: {
-    ...Typography.bodySmall,
+    ...Typography.caption,
     color: Colors.textMuted,
     textDecorationLine: 'line-through',
   },
   
-  availability: {
+  availabilityBadge: {
+    position: 'absolute',
+    bottom: 8,
+    right: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  
+  outOfStockBadge: {
+    backgroundColor: Colors.error,
+  },
+  
+  lowStockBadge: {
+    backgroundColor: Colors.warning,
+  },
+  
+  availabilityText: {
     ...Typography.caption,
-    marginBottom: 4,
-  },
-  
-  outOfStock: {
-    color: Colors.error,
-  },
-  
-  lowStock: {
-    color: Colors.warning,
-  },
-  
-  ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    marginBottom: 8,
-  },
-  
-  rating: {
-    ...Typography.caption,
-    color: Colors.textMuted,
+    color: Colors.white,
+    fontSize: 10,
   },
   
   addToCartButton: {
@@ -318,15 +328,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Colors.secondary,
-    borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 12,
-    gap: 6,
+    borderRadius: 6,
+    gap: 4,
   },
   
   addToCartText: {
     ...Typography.caption,
-    color: Colors.black,
+    color: Colors.white,
     fontWeight: '600',
   },
 }); 

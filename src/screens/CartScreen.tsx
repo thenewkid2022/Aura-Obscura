@@ -322,6 +322,10 @@ const styles = StyleSheet.create({
     padding: 16,
     borderTopWidth: 1,
     borderTopColor: Colors.border,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: 12,
+    marginBottom: 16,
   },
   
   summaryRow: {
@@ -349,12 +353,12 @@ const styles = StyleSheet.create({
   
   totalLabel: {
     ...Typography.h4,
-    color: Colors.white,
+    color: Colors.textPrimary,
   },
   
   totalValue: {
     ...Typography.h4,
-    color: Colors.secondary,
+    color: Colors.textAccent,
   },
   
   freeShippingInfo: {

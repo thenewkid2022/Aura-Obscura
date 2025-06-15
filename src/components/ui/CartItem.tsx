@@ -99,11 +99,13 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
+    borderWidth: 1,
+    borderColor: Colors.border,
     elevation: 2,
-    shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    shadowColor: Colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
   },
   
   image: {
@@ -157,7 +159,7 @@ const styles = StyleSheet.create({
   
   totalPrice: {
     ...Typography.price,
-    color: Colors.secondary,
+    color: Colors.textAccent,
     fontSize: 16,
   },
   
@@ -171,11 +173,11 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: Colors.backgroundPrimary,
+    backgroundColor: Colors.inputBackground,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: Colors.border,
+    borderColor: Colors.borderGold,
   },
   
   quantity: {

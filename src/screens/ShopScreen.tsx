@@ -26,7 +26,6 @@ export const ShopScreen: React.FC<ShopScreenProps> = ({ navigation }) => {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
-  const [cartItemCount, setCartItemCount] = useState(0);
   const [filters, setFilters] = useState<ProductFilters>({
     brands: [],
     categories: [],
@@ -37,7 +36,6 @@ export const ShopScreen: React.FC<ShopScreenProps> = ({ navigation }) => {
     availability: 'all',
   });
   const [sortBy, setSortBy] = useState<'name' | 'price' | 'rating' | 'newest' | 'popular'>('newest');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   // Mock-Daten laden
   useEffect(() => {
@@ -46,7 +44,7 @@ export const ShopScreen: React.FC<ShopScreenProps> = ({ navigation }) => {
 
   useEffect(() => {
     applyFilters();
-  }, [products, searchQuery, filters, sortBy, sortOrder]);
+  }, [products, searchQuery, filters, sortBy]);
 
   const loadProducts = () => {
     // Mock-Produkte für Demo
@@ -227,7 +225,7 @@ export const ShopScreen: React.FC<ShopScreenProps> = ({ navigation }) => {
           break;
       }
       
-      return sortOrder === 'asc' ? comparison : -comparison;
+      return comparison;
     });
 
     setFilteredProducts(filtered);
@@ -238,19 +236,11 @@ export const ShopScreen: React.FC<ShopScreenProps> = ({ navigation }) => {
   };
 
   const handleFavoritePress = (product: Product) => {
-    console.log('Favorite:', product.name);
+    // TODO: Implement favorite functionality
   };
 
   const handleAddToCart = (product: Product) => {
-    setCartItemCount(prev => prev + 1);
-    Alert.alert(
-      'Produkt hinzugefügt',
-      `${product.name} wurde zu Ihrem Warenkorb hinzugefügt.`,
-      [
-        { text: 'Weiter einkaufen', style: 'cancel' },
-        { text: 'Zum Warenkorb', onPress: () => navigation.navigate('Warenkorb') },
-      ]
-    );
+    // TODO: Implement add to cart functionality
   };
 
   const clearFilters = () => {

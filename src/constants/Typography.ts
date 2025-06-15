@@ -1,4 +1,12 @@
-import { Platform } from 'react-native';
+import { Platform, Dimensions } from 'react-native';
+
+const { width, height } = Dimensions.get('window');
+
+// Responsive Font Sizes basierend auf Bildschirmgröße
+const getResponsiveFontSize = (baseSize: number) => {
+  const scale = Math.min(width / 375, height / 812); // iPhone X als Referenz
+  return Math.round(baseSize * scale);
+};
 
 // Font Families
 export const Fonts = {
@@ -34,25 +42,25 @@ export const Fonts = {
   }),
 } as const;
 
-// Font Sizes
+// Responsive Font Sizes
 export const FontSizes = {
-  xs: 12,
-  sm: 14,
-  base: 16,
-  lg: 18,
-  xl: 20,
-  '2xl': 24,
-  '3xl': 30,
-  '4xl': 36,
-  '5xl': 48,
-  '6xl': 60,
+  xs: getResponsiveFontSize(12),
+  sm: getResponsiveFontSize(14),
+  base: getResponsiveFontSize(16),
+  lg: getResponsiveFontSize(18),
+  xl: getResponsiveFontSize(20),
+  '2xl': getResponsiveFontSize(24),
+  '3xl': getResponsiveFontSize(30),
+  '4xl': getResponsiveFontSize(36),
+  '5xl': getResponsiveFontSize(48),
+  '6xl': getResponsiveFontSize(60),
 } as const;
 
-// Line Heights
+// Mobile-optimierte Line Heights
 export const LineHeights = {
   tight: 1.2,
-  normal: 1.5,
-  relaxed: 1.75,
+  normal: 1.4, // Reduziert für mobile Lesbarkeit
+  relaxed: 1.6, // Reduziert für mobile Lesbarkeit
 } as const;
 
 // Font Weights
@@ -65,35 +73,35 @@ export const FontWeights = {
   extrabold: '800',
 } as const;
 
-// Typography Styles
+// Mobile-optimierte Typography Styles
 export const Typography = {
-  // Headlines
+  // Headlines - Mobile-optimiert
   h1: {
     fontFamily: Fonts.headlineBold,
-    fontSize: FontSizes['5xl'],
-    lineHeight: FontSizes['5xl'] * LineHeights.tight,
+    fontSize: FontSizes['4xl'], // Reduziert für mobile
+    lineHeight: FontSizes['4xl'] * LineHeights.tight,
     fontWeight: FontWeights.bold,
   },
   h2: {
     fontFamily: Fonts.headlineBold,
-    fontSize: FontSizes['4xl'],
-    lineHeight: FontSizes['4xl'] * LineHeights.tight,
+    fontSize: FontSizes['3xl'], // Reduziert für mobile
+    lineHeight: FontSizes['3xl'] * LineHeights.tight,
     fontWeight: FontWeights.bold,
   },
   h3: {
-    fontFamily: Fonts.headlineBold,
-    fontSize: FontSizes['3xl'],
-    lineHeight: FontSizes['3xl'] * LineHeights.tight,
-    fontWeight: FontWeights.semibold,
-  },
-  h4: {
     fontFamily: Fonts.headlineBold,
     fontSize: FontSizes['2xl'],
     lineHeight: FontSizes['2xl'] * LineHeights.tight,
     fontWeight: FontWeights.semibold,
   },
+  h4: {
+    fontFamily: Fonts.headlineBold,
+    fontSize: FontSizes.xl,
+    lineHeight: FontSizes.xl * LineHeights.tight,
+    fontWeight: FontWeights.semibold,
+  },
   
-  // Body Text
+  // Body Text - Mobile-optimiert
   bodyLarge: {
     fontFamily: Fonts.body,
     fontSize: FontSizes.lg,
@@ -113,7 +121,7 @@ export const Typography = {
     fontWeight: FontWeights.normal,
   },
   
-  // Special Text
+  // Special Text - Mobile-optimiert
   caption: {
     fontFamily: Fonts.body,
     fontSize: FontSizes.xs,
@@ -128,8 +136,28 @@ export const Typography = {
   },
   price: {
     fontFamily: Fonts.headlineBold,
+    fontSize: FontSizes.xl, // Reduziert für mobile
+    lineHeight: FontSizes.xl * LineHeights.tight,
+    fontWeight: FontWeights.bold,
+  },
+  
+  // Mobile-spezifische Typography
+  mobileTitle: {
+    fontFamily: Fonts.headlineBold,
     fontSize: FontSizes['2xl'],
     lineHeight: FontSizes['2xl'] * LineHeights.tight,
     fontWeight: FontWeights.bold,
+  },
+  mobileSubtitle: {
+    fontFamily: Fonts.body,
+    fontSize: FontSizes.base,
+    lineHeight: FontSizes.base * LineHeights.normal,
+    fontWeight: FontWeights.normal,
+  },
+  mobileButton: {
+    fontFamily: Fonts.bodyBold,
+    fontSize: FontSizes.sm,
+    lineHeight: FontSizes.sm * LineHeights.tight,
+    fontWeight: FontWeights.semibold,
   },
 } as const; 

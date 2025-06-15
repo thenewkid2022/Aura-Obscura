@@ -2,12 +2,12 @@ import React from 'react';
 import {
   TouchableOpacity,
   Text,
+  View,
   StyleSheet,
   ViewStyle,
   TextStyle,
   ActivityIndicator,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../../constants/Colors';
 import { Typography } from '../../constants/Typography';
 
@@ -36,65 +36,117 @@ export const Button: React.FC<ButtonProps> = ({
   icon,
   iconPosition = 'left',
 }) => {
-  const buttonStyles = [
-    styles.base,
-    styles[size],
-    styles[variant],
-    disabled && styles.disabled,
-    style,
-  ];
+  const handlePress = () => {
+    if (disabled || loading) return;
+    
+    onPress();
+  };
 
-  const textStyles = [
-    styles.text,
-    styles[`${variant}Text`],
-    styles[`${size}Text`],
-    disabled && styles.disabledText,
-    textStyle,
-  ];
+  const getButtonStyle = (): ViewStyle => {
+    const baseStyle: ViewStyle = {
+      borderRadius: 8,
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexDirection: 'row',
+      minHeight: size === 'small' ? 40 : size === 'medium' ? 48 : 56,
+      paddingHorizontal: size === 'small' ? 16 : size === 'medium' ? 20 : 24,
+      paddingVertical: size === 'small' ? 8 : size === 'medium' ? 12 : 16,
+    };
+
+    switch (variant) {
+      case 'primary':
+        return {
+          ...baseStyle,
+          backgroundColor: disabled ? Colors.mediumGray : Colors.secondary,
+        };
+      case 'secondary':
+        return {
+          ...baseStyle,
+          backgroundColor: disabled ? Colors.mediumGray : Colors.primary,
+        };
+      case 'outline':
+        return {
+          ...baseStyle,
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          borderColor: disabled ? Colors.mediumGray : Colors.secondary,
+        };
+      case 'ghost':
+        return {
+          ...baseStyle,
+          backgroundColor: 'transparent',
+        };
+      default:
+        return baseStyle;
+    }
+  };
+
+  const getTextStyle = (): TextStyle => {
+    const baseStyle: TextStyle = {
+      ...Typography.mobileButton,
+      textAlign: 'center',
+    };
+
+    switch (variant) {
+      case 'primary':
+        return {
+          ...baseStyle,
+          color: disabled ? Colors.textMuted : Colors.buttonTextOnGold,
+        };
+      case 'secondary':
+        return {
+          ...baseStyle,
+          color: disabled ? Colors.textMuted : Colors.buttonTextOnBordeaux,
+        };
+      case 'outline':
+        return {
+          ...baseStyle,
+          color: disabled ? Colors.textMuted : Colors.secondary,
+        };
+      case 'ghost':
+        return {
+          ...baseStyle,
+          color: disabled ? Colors.textMuted : Colors.textSecondary,
+        };
+      default:
+        return baseStyle;
+    }
+  };
 
   const renderContent = () => (
     <>
       {loading ? (
-        <ActivityIndicator 
-          color={variant === 'primary' ? Colors.white : Colors.secondary} 
-          size="small" 
+        <ActivityIndicator
+          size="small"
+          color={variant === 'primary' ? Colors.buttonTextOnGold : Colors.secondary}
         />
       ) : (
         <>
-          {icon && iconPosition === 'left' && icon}
-          <Text style={textStyles}>{title}</Text>
-          {icon && iconPosition === 'right' && icon}
+          {icon && iconPosition === 'left' && (
+            <View style={styles.iconContainer}>
+              {icon}
+            </View>
+          )}
+          <Text style={[getTextStyle(), textStyle]}>{title}</Text>
+          {icon && iconPosition === 'right' && (
+            <View style={styles.iconContainer}>
+              {icon}
+            </View>
+          )}
         </>
       )}
     </>
   );
 
-  if (variant === 'primary') {
-    return (
-      <TouchableOpacity
-        style={buttonStyles}
-        onPress={onPress}
-        disabled={disabled || loading}
-        activeOpacity={0.8}
-      >
-        <LinearGradient
-          colors={[Colors.primary, Colors.darkPurple]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.gradient}
-        >
-          {renderContent()}
-        </LinearGradient>
-      </TouchableOpacity>
-    );
-  }
-
   return (
     <TouchableOpacity
-      style={buttonStyles}
-      onPress={onPress}
+      style={[getButtonStyle(), style]}
+      onPress={handlePress}
       disabled={disabled || loading}
-      activeOpacity={0.8}
+      activeOpacity={0.7}
+      accessibilityRole="button"
+      accessibilityLabel={title}
+      accessibilityState={{ disabled, busy: loading }}
     >
       {renderContent()}
     </TouchableOpacity>
@@ -102,89 +154,7 @@ export const Button: React.FC<ButtonProps> = ({
 };
 
 const styles = StyleSheet.create({
-  base: {
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    overflow: 'hidden',
-  },
-  
-  // Size variants
-  small: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    minHeight: 36,
-  },
-  medium: {
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    minHeight: 48,
-  },
-  large: {
-    paddingHorizontal: 32,
-    paddingVertical: 16,
-    minHeight: 56,
-  },
-  
-  // Variant styles
-  primary: {
-    backgroundColor: Colors.primary,
-  },
-  secondary: {
-    backgroundColor: Colors.secondary,
-  },
-  outline: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: Colors.secondary,
-  },
-  ghost: {
-    backgroundColor: 'transparent',
-  },
-  
-  // Text styles
-  text: {
-    ...Typography.button,
-    textAlign: 'center',
-  },
-  primaryText: {
-    color: Colors.white,
-  },
-  secondaryText: {
-    color: Colors.black,
-  },
-  outlineText: {
-    color: Colors.secondary,
-  },
-  ghostText: {
-    color: Colors.secondary,
-  },
-  
-  // Size text styles
-  smallText: {
-    fontSize: 14,
-  },
-  mediumText: {
-    fontSize: 16,
-  },
-  largeText: {
-    fontSize: 18,
-  },
-  
-  // Disabled styles
-  disabled: {
-    opacity: 0.5,
-  },
-  disabledText: {
-    opacity: 0.7,
-  },
-  
-  // Gradient
-  gradient: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
+  iconContainer: {
+    marginHorizontal: 4,
   },
 }); 

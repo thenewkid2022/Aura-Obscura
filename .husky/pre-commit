@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Pre-commit Hook für Code-Qualität
+echo "🔍 Running pre-commit checks..."
+
+# TypeScript Check
+echo "📝 Checking TypeScript..."
+npm run type-check
+
+# Lint Check
+echo "🧹 Running ESLint..."
+npm run lint
+
+# Format Check
+echo "💅 Checking code format..."
+npm run format:check
+
+echo "✅ All pre-commit checks passed!" 
