@@ -11,10 +11,14 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../constants/Colors';
-import { Typography } from '../constants/Typography';
+import { Typography, Fonts, FontSizes, FontWeights } from '../constants/Typography';
 import { Button } from '../components/ui/Button';
 import { ProductCard } from '../components/ui/ProductCard';
+import { LanguageSwitcher } from '../components/ui/LanguageSwitcher';
 import { Product } from '../types';
+import { testProducts } from '../constants/TestProducts';
+import { useLanguage } from '../contexts/LanguageContext';
+import { useCart } from '../contexts/CartContext';
 
 const { height } = Dimensions.get('window');
 
@@ -23,6 +27,8 @@ interface HomeScreenProps {
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
+  const { t } = useLanguage();
+  const { addToCart } = useCart();
   const [refreshing, setRefreshing] = useState(false);
   const [newProducts, setNewProducts] = useState<Product[]>([]);
   const [limitedProducts, setLimitedProducts] = useState<Product[]>([]);
@@ -34,81 +40,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   }, []);
 
   const loadMockData = () => {
-    // Mock-Produkte für Demo
-    const mockProducts: Product[] = [
-      {
-        id: '1',
-        name: 'Reflection Man',
-        brand: 'Amouage',
-        description: 'Ein unisex-Luxusduft mit Moschus & Sandelholz',
-        shortDescription: 'Unisex-Luxusduft mit Moschus & Sandelholz',
-        price: 28,
-        currency: 'EUR',
-        images: ['https://via.placeholder.com/300x400/2E133F/FFFFFF?text=Amouage+Reflection'],
-        category: 'eau-de-parfum',
-        type: 'decant',
-        gender: 'unisex',
-        notes: [
-          { id: '1', name: 'Moschus', type: 'base', category: 'animalisch' },
-          { id: '2', name: 'Sandelholz', type: 'base', category: 'holz' },
-        ],
-        concentration: 'Eau de Parfum',
-        volume: '10ml',
-        availability: 5,
-        isLimited: true,
-        isExclusive: false,
-        isNew: true,
-        isOnSale: false,
-        rating: 4.8,
-        reviewCount: 23,
-        decantInfo: {
-          originalBottle: 'Amouage Reflection Man 100ml',
-          decantDate: new Date(),
-          batchNumber: 'AO-2024-001',
-          authenticity: true,
-        },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: '2',
-        name: 'Tobacco Vanille',
-        brand: 'Tom Ford',
-        description: 'Ein warmer, süßer Duft mit Tabak und Vanille',
-        shortDescription: 'Warmer, süßer Duft mit Tabak und Vanille',
-        price: 32,
-        currency: 'EUR',
-        images: ['https://via.placeholder.com/300x400/2E133F/FFFFFF?text=Tom+Ford+Tobacco'],
-        category: 'eau-de-parfum',
-        type: 'decant',
-        gender: 'unisex',
-        notes: [
-          { id: '3', name: 'Tabak', type: 'heart', category: 'tabak' },
-          { id: '4', name: 'Vanille', type: 'base', category: 'gourmand' },
-        ],
-        concentration: 'Eau de Parfum',
-        volume: '10ml',
-        availability: 3,
-        isLimited: true,
-        isExclusive: true,
-        isNew: false,
-        isOnSale: false,
-        rating: 4.9,
-        reviewCount: 45,
-        decantInfo: {
-          originalBottle: 'Tom Ford Tobacco Vanille 50ml',
-          decantDate: new Date(),
-          batchNumber: 'AO-2024-002',
-          authenticity: true,
-        },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ];
-
-    setNewProducts(mockProducts.filter(p => p.isNew));
-    setLimitedProducts(mockProducts.filter(p => p.isLimited));
-    setExclusiveProducts(mockProducts.filter(p => p.isExclusive));
+    // Testprodukte mit echten Bildern aus dem Assets-Ordner
+    setNewProducts(testProducts.filter(p => p.isNew));
+    setLimitedProducts(testProducts.filter(p => p.isLimited));
+    setExclusiveProducts(testProducts.filter(p => p.isExclusive));
   };
 
   const onRefresh = async () => {
@@ -132,6 +67,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         colors={[Colors.gradientStart, Colors.gradientEnd]}
         style={styles.heroGradient}
       >
+        <View style={styles.languageSwitcherContainer}>
+          <LanguageSwitcher />
+        </View>
         <View style={styles.heroContent}>
           <Image
             source={require('../../assets/logo.png')}
@@ -139,13 +77,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             resizeMode="contain"
           />
           <Text style={styles.heroTitle}>
-            Seltene Düfte.{'\n'}Dunkle Aura.{'\n'}Pure Exzellenz.
+            {t.heroTitle}
           </Text>
           <Text style={styles.heroSubtitle}>
-            Entdecken Sie exklusive Parfums und handverlesene Decants aus den feinsten Luxusmarken der Welt.
+            {t.heroSubtitle}
           </Text>
           <Button
-            title="Jetzt entdecken"
+            title={t.discoverButton}
             onPress={handleDiscoverPress}
             variant="secondary"
             size="large"
@@ -164,7 +102,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       </View>
       {onPress && (
         <Button
-          title="Alle anzeigen"
+          title={t.viewAll}
           onPress={onPress}
           variant="ghost"
           size="small"
@@ -189,6 +127,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               onFavoritePress={(product) => {
                 // TODO: Implement favorite functionality
               }}
+              onAddToCart={(product) => addToCart(product, 1)}
             />
           </View>
         ))}
@@ -211,20 +150,20 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       
       {newProducts.length > 0 && renderProductSection(
         newProducts,
-        'Neu im Shop',
-        'Frische Düfte, die Sie begeistern werden'
+        t.newInShop,
+        t.newInShopSubtitle
       )}
       
       {limitedProducts.length > 0 && renderProductSection(
         limitedProducts,
-        'Nur heute verfügbar',
-        'Exklusive Angebote mit begrenzter Verfügbarkeit'
+        t.limitedAvailability,
+        t.limitedAvailabilitySubtitle
       )}
       
       {exclusiveProducts.length > 0 && renderProductSection(
         exclusiveProducts,
-        'Exklusive Drops',
-        'Handverlesene Raritäten für Kenner'
+        t.exclusiveDrops,
+        t.exclusiveDropsSubtitle
       )}
       
       <View style={styles.newsletterSection}>
@@ -234,13 +173,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         >
           <Ionicons name="mail-outline" size={32} color={Colors.secondary} />
           <Text style={styles.newsletterTitle}>
-            Erhalten Sie Zugang zu exklusiven Drops
+            {t.newsletterTitle}
           </Text>
           <Text style={styles.newsletterSubtitle}>
-            Als Newsletter-Abonnent erhalten Sie als Erster Zugang zu neuen Produkten und exklusiven Angeboten.
+            {t.newsletterSubtitle}
           </Text>
           <Button
-            title="Newsletter abonnieren"
+            title={t.newsletterButton}
             onPress={() => {
               // TODO: Implement newsletter signup
             }}
@@ -272,6 +211,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   
+  languageSwitcherContainer: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    zIndex: 10,
+  },
+  
   heroContent: {
     alignItems: 'center',
     maxWidth: 350,
@@ -280,7 +226,7 @@ const styles = StyleSheet.create({
   heroLogo: {
     width: 100,
     height: 100,
-    marginBottom: 20,
+    marginBottom: 32,
     borderRadius: 50,
     shadowColor: Colors.black,
     shadowOffset: {
@@ -293,11 +239,17 @@ const styles = StyleSheet.create({
   },
   
   heroTitle: {
-    ...Typography.mobileTitle,
+    fontFamily: Fonts.headlineBold,
+    fontSize: FontSizes['4xl'],
+    lineHeight: FontSizes['4xl'] * 1.1,
+    fontWeight: FontWeights.bold,
     color: Colors.textPrimary,
     textAlign: 'center',
-    marginBottom: 12,
-    lineHeight: 32,
+    marginBottom: 16,
+    letterSpacing: 0.5,
+    textShadowColor: Colors.glow,
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 8,
   },
   
   heroSubtitle: {

@@ -9,6 +9,7 @@ import {
   Modal,
   ScrollView,
   Alert,
+  Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../constants/Colors';
@@ -16,12 +17,20 @@ import { Typography } from '../constants/Typography';
 import { Button } from '../components/ui/Button';
 import { ProductCard } from '../components/ui/ProductCard';
 import { Product, ProductFilters } from '../types';
+import { testProducts } from '../constants/TestProducts';
+import { useLanguage } from '../contexts/LanguageContext';
+import { useCart } from '../contexts/CartContext';
+
+const { width } = Dimensions.get('window');
+const isTablet = width > 768; // Tablet/Desktop breakpoint
 
 interface ShopScreenProps {
   navigation: any;
 }
 
 export const ShopScreen: React.FC<ShopScreenProps> = ({ navigation }) => {
+  const { t } = useLanguage();
+  const { addToCart } = useCart();
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -47,108 +56,8 @@ export const ShopScreen: React.FC<ShopScreenProps> = ({ navigation }) => {
   }, [products, searchQuery, filters, sortBy]);
 
   const loadProducts = () => {
-    // Mock-Produkte für Demo
-    const mockProducts: Product[] = [
-      {
-        id: '1',
-        name: 'Reflection Man',
-        brand: 'Amouage',
-        description: 'Ein unisex-Luxusduft mit Moschus & Sandelholz',
-        shortDescription: 'Unisex-Luxusduft mit Moschus & Sandelholz',
-        price: 28,
-        currency: 'EUR',
-        images: ['https://via.placeholder.com/300x400/2E133F/FFFFFF?text=Amouage+Reflection'],
-        category: 'eau-de-parfum',
-        type: 'decant',
-        gender: 'unisex',
-        notes: [
-          { id: '1', name: 'Moschus', type: 'base', category: 'animalisch' },
-          { id: '2', name: 'Sandelholz', type: 'base', category: 'holz' },
-        ],
-        concentration: 'Eau de Parfum',
-        volume: '10ml',
-        availability: 5,
-        isLimited: true,
-        isExclusive: false,
-        isNew: true,
-        isOnSale: false,
-        rating: 4.8,
-        reviewCount: 23,
-        decantInfo: {
-          originalBottle: 'Amouage Reflection Man 100ml',
-          decantDate: new Date(),
-          batchNumber: 'AO-2024-001',
-          authenticity: true,
-        },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: '2',
-        name: 'Tobacco Vanille',
-        brand: 'Tom Ford',
-        description: 'Ein warmer, süßer Duft mit Tabak und Vanille',
-        shortDescription: 'Warmer, süßer Duft mit Tabak und Vanille',
-        price: 32,
-        currency: 'EUR',
-        images: ['https://via.placeholder.com/300x400/2E133F/FFFFFF?text=Tom+Ford+Tobacco'],
-        category: 'eau-de-parfum',
-        type: 'decant',
-        gender: 'unisex',
-        notes: [
-          { id: '3', name: 'Tabak', type: 'heart', category: 'tabak' },
-          { id: '4', name: 'Vanille', type: 'base', category: 'gourmand' },
-        ],
-        concentration: 'Eau de Parfum',
-        volume: '10ml',
-        availability: 3,
-        isLimited: true,
-        isExclusive: true,
-        isNew: false,
-        isOnSale: false,
-        rating: 4.9,
-        reviewCount: 45,
-        decantInfo: {
-          originalBottle: 'Tom Ford Tobacco Vanille 50ml',
-          decantDate: new Date(),
-          batchNumber: 'AO-2024-002',
-          authenticity: true,
-        },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: '3',
-        name: 'Bleu de Chanel',
-        brand: 'Chanel',
-        description: 'Ein eleganter, moderner Duft für den urbanen Gentleman',
-        shortDescription: 'Eleganter, moderner Duft für den urbanen Gentleman',
-        price: 45,
-        currency: 'EUR',
-        images: ['https://via.placeholder.com/300x400/2E133F/FFFFFF?text=Chanel+Bleu'],
-        category: 'eau-de-parfum',
-        type: 'original',
-        gender: 'masculine',
-        notes: [
-          { id: '5', name: 'Bergamotte', type: 'top', category: 'zitrus' },
-          { id: '6', name: 'Holz', type: 'base', category: 'holz' },
-        ],
-        concentration: 'Eau de Parfum',
-        volume: '100ml',
-        availability: 12,
-        isLimited: false,
-        isExclusive: false,
-        isNew: false,
-        isOnSale: true,
-        originalPrice: 55,
-        rating: 4.7,
-        reviewCount: 89,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ];
-
-    setProducts(mockProducts);
+    // Testprodukte mit echten Bildern aus dem Assets-Ordner
+    setProducts(testProducts);
   };
 
   const applyFilters = () => {
@@ -240,7 +149,9 @@ export const ShopScreen: React.FC<ShopScreenProps> = ({ navigation }) => {
   };
 
   const handleAddToCart = (product: Product) => {
-    // TODO: Implement add to cart functionality
+    addToCart(product, 1);
+    // Optional: Zeige eine Bestätigung an
+    // Alert.alert('Produkt hinzugefügt', `${product.name} wurde zum Warenkorb hinzugefügt.`);
   };
 
   const clearFilters = () => {
@@ -255,49 +166,63 @@ export const ShopScreen: React.FC<ShopScreenProps> = ({ navigation }) => {
     });
   };
 
-  const renderHeader = () => (
-    <View style={styles.header}>
-      <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color={Colors.textMuted} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Nach Düften, Marken oder Noten suchen..."
-          placeholderTextColor={Colors.textMuted}
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-      </View>
-      
-      <View style={styles.filterRow}>
-        <TouchableOpacity
-          style={styles.filterButton}
-          onPress={() => setShowFilters(true)}
-        >
-          <Ionicons name="filter" size={20} color={Colors.secondary} />
-          <Text style={styles.filterButtonText}>Filter</Text>
-        </TouchableOpacity>
+  const renderHeader = () => {
+    // Anzahl der aktiven Filter berechnen
+    const activeFiltersCount = 
+      filters.brands.length + 
+      filters.categories.length + 
+      filters.types.length + 
+      filters.genders.length + 
+      (filters.availability !== 'all' ? 1 : 0) +
+      (filters.priceRange[0] !== 0 || filters.priceRange[1] !== 500 ? 1 : 0);
+
+    return (
+      <View style={styles.header}>
+        <View style={styles.searchContainer}>
+          <Ionicons name="search" size={20} color={Colors.textMuted} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder={t.searchPlaceholder}
+            placeholderTextColor={Colors.textMuted}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+        </View>
         
-        <TouchableOpacity
-          style={styles.sortButton}
-          onPress={() => {
-            const sortOptions = ['newest', 'popular', 'price', 'rating', 'name'];
-            const currentIndex = sortOptions.indexOf(sortBy);
-            const nextIndex = (currentIndex + 1) % sortOptions.length;
-            setSortBy(sortOptions[nextIndex] as any);
-          }}
-        >
-          <Ionicons name="swap-vertical" size={20} color={Colors.secondary} />
-          <Text style={styles.sortButtonText}>
-            {sortBy === 'newest' && 'Neueste'}
-            {sortBy === 'popular' && 'Beliebt'}
-            {sortBy === 'price' && 'Preis'}
-            {sortBy === 'rating' && 'Bewertung'}
-            {sortBy === 'name' && 'Name'}
-          </Text>
-        </TouchableOpacity>
+        <View style={styles.filterRow}>
+          <TouchableOpacity
+            style={styles.filterButton}
+            onPress={() => setShowFilters(true)}
+          >
+            <Ionicons name="filter" size={20} color={Colors.secondary} />
+            <Text style={styles.filterButtonText}>
+              {t.filter}
+              {activeFiltersCount > 0 && ` (${activeFiltersCount})`}
+            </Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={styles.sortButton}
+            onPress={() => {
+              const sortOptions = ['newest', 'popular', 'price', 'rating', 'name'];
+              const currentIndex = sortOptions.indexOf(sortBy);
+              const nextIndex = (currentIndex + 1) % sortOptions.length;
+              setSortBy(sortOptions[nextIndex] as any);
+            }}
+          >
+            <Ionicons name="swap-vertical" size={20} color={Colors.secondary} />
+            <Text style={styles.sortButtonText}>
+              {sortBy === 'newest' && t.sortNewest}
+              {sortBy === 'popular' && t.sortPopular}
+              {sortBy === 'price' && t.sortPrice}
+              {sortBy === 'rating' && t.sortRating}
+              {sortBy === 'name' && t.sortName}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   const renderProductItem = ({ item }: { item: Product }) => (
     <ProductCard
@@ -308,45 +233,273 @@ export const ShopScreen: React.FC<ShopScreenProps> = ({ navigation }) => {
     />
   );
 
-  const renderFilterModal = () => (
-    <Modal
-      visible={showFilters}
-      animationType="slide"
-      presentationStyle="pageSheet"
-    >
-      <View style={styles.modalContainer}>
-        <View style={styles.modalHeader}>
-          <Text style={styles.modalTitle}>Filter</Text>
-          <TouchableOpacity onPress={() => setShowFilters(false)}>
-            <Ionicons name="close" size={24} color={Colors.white} />
-          </TouchableOpacity>
+  const renderFilterModal = () => {
+    // Verfügbare Optionen aus den Produkten extrahieren
+    const availableBrands = [...new Set(products.map(p => p.brand))];
+    const availableCategories = [...new Set(products.map(p => p.category))];
+    const availableTypes = [...new Set(products.map(p => p.type))];
+    const availableGenders = [...new Set(products.map(p => p.gender))];
+
+    const toggleBrand = (brand: string) => {
+      setFilters(prev => ({
+        ...prev,
+        brands: prev.brands.includes(brand)
+          ? prev.brands.filter(b => b !== brand)
+          : [...prev.brands, brand]
+      }));
+    };
+
+    const toggleCategory = (category: string) => {
+      setFilters(prev => ({
+        ...prev,
+        categories: prev.categories.includes(category)
+          ? prev.categories.filter(c => c !== category)
+          : [...prev.categories, category]
+      }));
+    };
+
+    const toggleType = (type: string) => {
+      setFilters(prev => ({
+        ...prev,
+        types: prev.types.includes(type)
+          ? prev.types.filter(t => t !== type)
+          : [...prev.types, type]
+      }));
+    };
+
+    const toggleGender = (gender: string) => {
+      setFilters(prev => ({
+        ...prev,
+        genders: prev.genders.includes(gender)
+          ? prev.genders.filter(g => g !== gender)
+          : [...prev.genders, gender]
+      }));
+    };
+
+    const updatePriceRange = (min: number, max: number) => {
+      setFilters(prev => ({
+        ...prev,
+        priceRange: [min, max]
+      }));
+    };
+
+    const updateAvailability = (availability: 'all' | 'in-stock' | 'limited') => {
+      setFilters(prev => ({
+        ...prev,
+        availability
+      }));
+    };
+
+    return (
+      <Modal
+        visible={showFilters}
+        animationType="slide"
+        presentationStyle="pageSheet"
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>{t.filter}</Text>
+            <TouchableOpacity onPress={() => setShowFilters(false)}>
+              <Ionicons name="close" size={24} color={Colors.white} />
+            </TouchableOpacity>
+          </View>
+          
+          <ScrollView style={styles.modalContent} showsVerticalScrollIndicator={false}>
+            {/* Marken */}
+            <View style={styles.filterSection}>
+              <Text style={styles.filterSectionTitle}>Marken</Text>
+              <View style={styles.filterOptions}>
+                {availableBrands.map(brand => (
+                  <TouchableOpacity
+                    key={brand}
+                    style={[
+                      styles.filterOption,
+                      filters.brands.includes(brand) && styles.filterOptionSelected
+                    ]}
+                    onPress={() => toggleBrand(brand)}
+                  >
+                    <Text style={[
+                      styles.filterOptionText,
+                      filters.brands.includes(brand) && styles.filterOptionTextSelected
+                    ]}>
+                      {brand}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
+            {/* Kategorien */}
+            <View style={styles.filterSection}>
+              <Text style={styles.filterSectionTitle}>Kategorien</Text>
+              <View style={styles.filterOptions}>
+                {availableCategories.map(category => (
+                  <TouchableOpacity
+                    key={category}
+                    style={[
+                      styles.filterOption,
+                      filters.categories.includes(category) && styles.filterOptionSelected
+                    ]}
+                    onPress={() => toggleCategory(category)}
+                  >
+                    <Text style={[
+                      styles.filterOptionText,
+                      filters.categories.includes(category) && styles.filterOptionTextSelected
+                    ]}>
+                      {category}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
+            {/* Typen */}
+            <View style={styles.filterSection}>
+              <Text style={styles.filterSectionTitle}>Typen</Text>
+              <View style={styles.filterOptions}>
+                {availableTypes.map(type => (
+                  <TouchableOpacity
+                    key={type}
+                    style={[
+                      styles.filterOption,
+                      filters.types.includes(type) && styles.filterOptionSelected
+                    ]}
+                    onPress={() => toggleType(type)}
+                  >
+                    <Text style={[
+                      styles.filterOptionText,
+                      filters.types.includes(type) && styles.filterOptionTextSelected
+                    ]}>
+                      {type === 'decant' ? 'Decant' : 'Original'}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
+            {/* Geschlechter */}
+            <View style={styles.filterSection}>
+              <Text style={styles.filterSectionTitle}>Geschlechter</Text>
+              <View style={styles.filterOptions}>
+                {availableGenders.map(gender => (
+                  <TouchableOpacity
+                    key={gender}
+                    style={[
+                      styles.filterOption,
+                      filters.genders.includes(gender) && styles.filterOptionSelected
+                    ]}
+                    onPress={() => toggleGender(gender)}
+                  >
+                    <Text style={[
+                      styles.filterOptionText,
+                      filters.genders.includes(gender) && styles.filterOptionTextSelected
+                    ]}>
+                      {gender === 'masculine' ? 'Männlich' : 
+                       gender === 'feminine' ? 'Weiblich' : 'Unisex'}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
+            {/* Preisbereich */}
+            <View style={styles.filterSection}>
+              <Text style={styles.filterSectionTitle}>Preisbereich</Text>
+              <View style={styles.priceRangeContainer}>
+                <Text style={styles.priceRangeText}>
+                  {filters.priceRange[0]}€ - {filters.priceRange[1]}€
+                </Text>
+                <View style={styles.priceRangeButtons}>
+                  <TouchableOpacity
+                    style={styles.priceRangeButton}
+                    onPress={() => updatePriceRange(0, 50)}
+                  >
+                    <Text style={styles.priceRangeButtonText}>0-50€</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.priceRangeButton}
+                    onPress={() => updatePriceRange(50, 100)}
+                  >
+                    <Text style={styles.priceRangeButtonText}>50-100€</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.priceRangeButton}
+                    onPress={() => updatePriceRange(100, 500)}
+                  >
+                    <Text style={styles.priceRangeButtonText}>100€+</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+
+            {/* Verfügbarkeit */}
+            <View style={styles.filterSection}>
+              <Text style={styles.filterSectionTitle}>Verfügbarkeit</Text>
+              <View style={styles.filterOptions}>
+                <TouchableOpacity
+                  style={[
+                    styles.filterOption,
+                    filters.availability === 'all' && styles.filterOptionSelected
+                  ]}
+                  onPress={() => updateAvailability('all')}
+                >
+                  <Text style={[
+                    styles.filterOptionText,
+                    filters.availability === 'all' && styles.filterOptionTextSelected
+                  ]}>
+                    Alle
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.filterOption,
+                    filters.availability === 'in-stock' && styles.filterOptionSelected
+                  ]}
+                  onPress={() => updateAvailability('in-stock')}
+                >
+                  <Text style={[
+                    styles.filterOptionText,
+                    filters.availability === 'in-stock' && styles.filterOptionTextSelected
+                  ]}>
+                    Auf Lager
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.filterOption,
+                    filters.availability === 'limited' && styles.filterOptionSelected
+                  ]}
+                  onPress={() => updateAvailability('limited')}
+                >
+                  <Text style={[
+                    styles.filterOptionText,
+                    filters.availability === 'limited' && styles.filterOptionTextSelected
+                  ]}>
+                    Limitiert
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </ScrollView>
+          
+          <View style={styles.modalFooter}>
+            <Button
+              title="Filter zurücksetzen"
+              onPress={clearFilters}
+              variant="outline"
+              style={styles.clearButton}
+            />
+            <Button
+              title="Anwenden"
+              onPress={() => setShowFilters(false)}
+              variant="primary"
+              style={styles.applyButton}
+            />
+          </View>
         </View>
-        
-        <ScrollView style={styles.modalContent}>
-          {/* Hier würden die Filter-Optionen implementiert */}
-          <Text style={styles.filterSectionTitle}>Marken</Text>
-          <Text style={styles.filterSectionTitle}>Kategorien</Text>
-          <Text style={styles.filterSectionTitle}>Preisbereich</Text>
-          <Text style={styles.filterSectionTitle}>Verfügbarkeit</Text>
-        </ScrollView>
-        
-        <View style={styles.modalFooter}>
-          <Button
-            title="Filter zurücksetzen"
-            onPress={clearFilters}
-            variant="outline"
-            style={styles.clearButton}
-          />
-          <Button
-            title="Anwenden"
-            onPress={() => setShowFilters(false)}
-            variant="primary"
-            style={styles.applyButton}
-          />
-        </View>
-      </View>
-    </Modal>
-  );
+      </Modal>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -356,16 +509,16 @@ export const ShopScreen: React.FC<ShopScreenProps> = ({ navigation }) => {
         data={filteredProducts}
         renderItem={renderProductItem}
         keyExtractor={(item) => item.id}
-        numColumns={2}
+        numColumns={isTablet ? 4 : 2}
         columnWrapperStyle={styles.productRow}
         contentContainerStyle={styles.productList}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.emptyState}>
             <Ionicons name="search-outline" size={64} color={Colors.textMuted} />
-            <Text style={styles.emptyStateTitle}>Keine Produkte gefunden</Text>
+            <Text style={styles.emptyStateTitle}>{t.noProductsFound}</Text>
             <Text style={styles.emptyStateSubtitle}>
-              Versuchen Sie andere Suchbegriffe oder Filter
+              {t.noProductsFoundSubtitle}
             </Text>
           </View>
         }
@@ -516,5 +669,65 @@ const styles = StyleSheet.create({
   
   applyButton: {
     flex: 1,
+  },
+  
+  filterSection: {
+    marginBottom: 24,
+  },
+  
+  filterOptions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  
+  filterOption: {
+    padding: 8,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: 8,
+    marginRight: 8,
+    marginBottom: 8,
+  },
+  
+  filterOptionSelected: {
+    backgroundColor: Colors.secondary,
+  },
+  
+  filterOptionText: {
+    ...Typography.bodySmall,
+    color: Colors.textPrimary,
+  },
+  
+  filterOptionTextSelected: {
+    ...Typography.bodySmall,
+    color: Colors.white,
+  },
+  
+  priceRangeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  
+  priceRangeText: {
+    ...Typography.bodySmall,
+    color: Colors.textPrimary,
+    marginRight: 16,
+  },
+  
+  priceRangeButtons: {
+    flexDirection: 'row',
+  },
+  
+  priceRangeButton: {
+    padding: 8,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: 8,
+    marginRight: 8,
+  },
+  
+  priceRangeButtonText: {
+    ...Typography.bodySmall,
+    color: Colors.textPrimary,
   },
 }); 

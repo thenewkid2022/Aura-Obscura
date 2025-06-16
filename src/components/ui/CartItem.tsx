@@ -5,11 +5,13 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../../constants/Colors';
 import { Typography } from '../../constants/Typography';
 import { CartItem as CartItemType } from '../../types';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface CartItemProps {
   item: CartItemType;
@@ -22,8 +24,14 @@ export const CartItem: React.FC<CartItemProps> = ({
   onUpdateQuantity,
   onRemove,
 }) => {
+  const { t } = useLanguage();
+  
   const formatPrice = (price: number) => {
     return `${price.toFixed(2)} €`;
+  };
+
+  const handleRemoveClick = () => {
+    onRemove(item.product.id);
   };
 
   const handleQuantityChange = (newQuantity: number) => {
@@ -35,7 +43,9 @@ export const CartItem: React.FC<CartItemProps> = ({
   return (
     <View style={styles.container}>
       <Image
-        source={{ uri: item.product.images[0] }}
+        source={typeof item.product.images[0] === 'string' 
+          ? { uri: item.product.images[0] } 
+          : item.product.images[0]}
         style={styles.image}
         resizeMode="cover"
       />
@@ -44,8 +54,10 @@ export const CartItem: React.FC<CartItemProps> = ({
         <View style={styles.header}>
           <Text style={styles.brand}>{item.product.brand}</Text>
           <TouchableOpacity
-            onPress={() => onRemove(item.product.id)}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            onPress={handleRemoveClick}
+            style={styles.removeButton}
+            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+            activeOpacity={0.7}
           >
             <Ionicons name="close" size={20} color={Colors.textMuted} />
           </TouchableOpacity>
@@ -57,7 +69,7 @@ export const CartItem: React.FC<CartItemProps> = ({
         
         {item.product.type === 'decant' && (
           <Text style={styles.decantInfo}>
-            Abgefüllt aus Originalflakon
+            {t.decantInfo}
           </Text>
         )}
         
@@ -130,6 +142,11 @@ const styles = StyleSheet.create({
     ...Typography.caption,
     color: Colors.textSecondary,
     marginBottom: 4,
+  },
+  
+  removeButton: {
+    padding: 8,
+    borderRadius: 4,
   },
   
   name: {

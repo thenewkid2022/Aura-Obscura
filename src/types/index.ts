@@ -31,7 +31,7 @@ export interface Product {
   price: number;
   originalPrice?: number;
   currency: string;
-  images: string[];
+  images: (string | number)[];
   category: ProductCategory;
   type: ProductType;
   gender: ProductGender;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -11,160 +11,35 @@ import { Colors } from '../constants/Colors';
 import { Typography } from '../constants/Typography';
 import { Button } from '../components/ui/Button';
 import { CartItem } from '../components/ui/CartItem';
-import { Cart, CartItem as CartItemType, Product } from '../types';
+import { useLanguage } from '../contexts/LanguageContext';
+import { useCart } from '../contexts/CartContext';
 
 interface CartScreenProps {
   navigation: any;
 }
 
 export const CartScreen: React.FC<CartScreenProps> = ({ navigation }) => {
-  const [cart, setCart] = useState<Cart>({
-    items: [],
-    total: 0,
-    itemCount: 0,
-  });
+  const { t } = useLanguage();
+  const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
 
-  // Mock-Daten für Demo
-  useEffect(() => {
-    loadMockCart();
-  }, []);
-
-  const loadMockCart = () => {
-    const mockProducts: Product[] = [
-      {
-        id: '1',
-        name: 'Reflection Man',
-        brand: 'Amouage',
-        description: 'Ein unisex-Luxusduft mit Moschus & Sandelholz',
-        shortDescription: 'Unisex-Luxusduft mit Moschus & Sandelholz',
-        price: 28,
-        currency: 'EUR',
-        images: ['https://via.placeholder.com/300x400/2E133F/FFFFFF?text=Amouage+Reflection'],
-        category: 'eau-de-parfum',
-        type: 'decant',
-        gender: 'unisex',
-        notes: [
-          { id: '1', name: 'Moschus', type: 'base', category: 'animalisch' },
-          { id: '2', name: 'Sandelholz', type: 'base', category: 'holz' },
-        ],
-        concentration: 'Eau de Parfum',
-        volume: '10ml',
-        availability: 5,
-        isLimited: true,
-        isExclusive: false,
-        isNew: true,
-        isOnSale: false,
-        rating: 4.8,
-        reviewCount: 23,
-        decantInfo: {
-          originalBottle: 'Amouage Reflection Man 100ml',
-          decantDate: new Date(),
-          batchNumber: 'AO-2024-001',
-          authenticity: true,
-        },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: '2',
-        name: 'Tobacco Vanille',
-        brand: 'Tom Ford',
-        description: 'Ein warmer, süßer Duft mit Tabak und Vanille',
-        shortDescription: 'Warmer, süßer Duft mit Tabak und Vanille',
-        price: 32,
-        currency: 'EUR',
-        images: ['https://via.placeholder.com/300x400/2E133F/FFFFFF?text=Tom+Ford+Tobacco'],
-        category: 'eau-de-parfum',
-        type: 'decant',
-        gender: 'unisex',
-        notes: [
-          { id: '3', name: 'Tabak', type: 'heart', category: 'tabak' },
-          { id: '4', name: 'Vanille', type: 'base', category: 'gourmand' },
-        ],
-        concentration: 'Eau de Parfum',
-        volume: '10ml',
-        availability: 3,
-        isLimited: true,
-        isExclusive: true,
-        isNew: false,
-        isOnSale: false,
-        rating: 4.9,
-        reviewCount: 45,
-        decantInfo: {
-          originalBottle: 'Tom Ford Tobacco Vanille 50ml',
-          decantDate: new Date(),
-          batchNumber: 'AO-2024-002',
-          authenticity: true,
-        },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ];
-
-    const mockCartItems: CartItemType[] = [
-      { product: mockProducts[0], quantity: 2 },
-      { product: mockProducts[1], quantity: 1 },
-    ];
-
-    const total = mockCartItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-    const itemCount = mockCartItems.reduce((sum, item) => sum + item.quantity, 0);
-
-    setCart({
-      items: mockCartItems,
-      total,
-      itemCount,
-    });
+  const handleRemoveItem = (productId: string) => {
+    removeFromCart(productId);
   };
 
-  const updateQuantity = (productId: string, quantity: number) => {
-    setCart(prevCart => {
-      const updatedItems = prevCart.items.map(item =>
-        item.product.id === productId
-          ? { ...item, quantity }
-          : item
-      );
-
-      const total = updatedItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-      const itemCount = updatedItems.reduce((sum, item) => sum + item.quantity, 0);
-
-      return {
-        items: updatedItems,
-        total,
-        itemCount,
-      };
-    });
-  };
-
-  const removeItem = (productId: string) => {
-    Alert.alert(
-      'Produkt entfernen',
-      'Möchten Sie dieses Produkt aus dem Warenkorb entfernen?',
-      [
-        { text: 'Abbrechen', style: 'cancel' },
-        {
-          text: 'Entfernen',
-          style: 'destructive',
-          onPress: () => {
-            setCart(prevCart => {
-              const updatedItems = prevCart.items.filter(item => item.product.id !== productId);
-              const total = updatedItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-              const itemCount = updatedItems.reduce((sum, item) => sum + item.quantity, 0);
-
-              return {
-                items: updatedItems,
-                total,
-                itemCount,
-              };
-            });
-          },
-        },
-      ]
-    );
+  const handleClearCart = () => {
+    Alert.alert(t.emptyCart, t.emptyCartMessage, [
+      { text: t.cancel, style: 'cancel' },
+      {
+        text: t.remove,
+        style: 'destructive',
+        onPress: clearCart,
+      },
+    ]);
   };
 
   const handleCheckout = () => {
     if (cart.items.length === 0) {
-      Alert.alert('Warenkorb leer', 'Ihr Warenkorb ist leer.');
+      Alert.alert(t.emptyCart, t.emptyCartMessage);
       return;
     }
     navigation.navigate('Checkout');
@@ -177,12 +52,12 @@ export const CartScreen: React.FC<CartScreenProps> = ({ navigation }) => {
   const renderEmptyCart = () => (
     <View style={styles.emptyContainer}>
       <Ionicons name="cart-outline" size={64} color={Colors.textMuted} />
-      <Text style={styles.emptyTitle}>Ihr Warenkorb ist leer</Text>
+      <Text style={styles.emptyTitle}>{t.emptyCartTitle}</Text>
       <Text style={styles.emptySubtitle}>
-        Entdecken Sie unsere exklusiven Düfte und fügen Sie sie zu Ihrem Warenkorb hinzu.
+        {t.emptyCartSubtitle}
       </Text>
       <Button
-        title="Zum Shop"
+        title={t.goToShop}
         onPress={() => navigation.navigate('Shop')}
         variant="primary"
         size="large"
@@ -198,7 +73,7 @@ export const CartScreen: React.FC<CartScreenProps> = ({ navigation }) => {
           key={item.product.id}
           item={item}
           onUpdateQuantity={updateQuantity}
-          onRemove={removeItem}
+          onRemove={handleRemoveItem}
         />
       ))}
     </ScrollView>
@@ -207,21 +82,21 @@ export const CartScreen: React.FC<CartScreenProps> = ({ navigation }) => {
   const renderSummary = () => (
     <View style={styles.summaryContainer}>
       <View style={styles.summaryRow}>
-        <Text style={styles.summaryLabel}>Zwischensumme</Text>
+        <Text style={styles.summaryLabel}>{t.subtotal}</Text>
         <Text style={styles.summaryValue}>{formatPrice(cart.total)}</Text>
       </View>
       
       <View style={styles.summaryRow}>
-        <Text style={styles.summaryLabel}>Versand</Text>
+        <Text style={styles.summaryLabel}>{t.shipping}</Text>
         <Text style={styles.summaryValue}>
-          {cart.total > 50 ? 'Kostenlos' : '4,99 €'}
+          {cart.total > 50 ? t.free : '4,99 €'}
         </Text>
       </View>
       
       <View style={styles.divider} />
       
       <View style={styles.summaryRow}>
-        <Text style={styles.totalLabel}>Gesamt</Text>
+        <Text style={styles.totalLabel}>{t.total}</Text>
         <Text style={styles.totalValue}>
           {formatPrice(cart.total > 50 ? cart.total : cart.total + 4.99)}
         </Text>
@@ -229,12 +104,12 @@ export const CartScreen: React.FC<CartScreenProps> = ({ navigation }) => {
       
       {cart.total < 50 && (
         <Text style={styles.freeShippingInfo}>
-          Noch {formatPrice(50 - cart.total)} für kostenlosen Versand
+          {t.freeShippingInfo} {formatPrice(50 - cart.total)} {t.forFreeShipping}
         </Text>
       )}
       
       <Button
-        title={`Zur Kasse (${formatPrice(cart.total > 50 ? cart.total : cart.total + 4.99)})`}
+        title={`${t.checkout} (${formatPrice(cart.total > 50 ? cart.total : cart.total + 4.99)})`}
         onPress={handleCheckout}
         variant="primary"
         size="large"
@@ -247,9 +122,9 @@ export const CartScreen: React.FC<CartScreenProps> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Warenkorb</Text>
+        <Text style={styles.title}>{t.cartTitle}</Text>
         <Text style={styles.itemCount}>
-          {cart.itemCount} {cart.itemCount === 1 ? 'Artikel' : 'Artikel'}
+          {cart.itemCount} {cart.itemCount === 1 ? t.item : t.items}
         </Text>
       </View>
 

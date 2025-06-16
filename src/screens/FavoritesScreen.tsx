@@ -2,13 +2,18 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Colors } from '../constants/Colors';
 import { Typography } from '../constants/Typography';
+import { useLanguage } from '../contexts/LanguageContext';
 
-export const FavoritesScreen: React.FC = () => (
-  <View style={styles.container}>
-    <Text style={styles.title}>Favoriten</Text>
-    <Text style={styles.text}>Hier erscheinen Ihre Lieblingsdüfte.</Text>
-  </View>
-);
+export const FavoritesScreen: React.FC = () => {
+  const { t } = useLanguage();
+  
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>{t.favoritesTitle}</Text>
+      <Text style={styles.text}>{t.favoritesDescription}</Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

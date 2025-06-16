@@ -2,13 +2,18 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Colors } from '../constants/Colors';
 import { Typography } from '../constants/Typography';
+import { useLanguage } from '../contexts/LanguageContext';
 
-export const ProfileScreen: React.FC = () => (
-  <View style={styles.container}>
-    <Text style={styles.title}>Mein Konto</Text>
-    <Text style={styles.text}>Hier verwalten Sie Ihr Profil und Ihre Bestellungen.</Text>
-  </View>
-);
+export const ProfileScreen: React.FC = () => {
+  const { t } = useLanguage();
+  
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>{t.myAccount}</Text>
+      <Text style={styles.text}>{t.profileDescription}</Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

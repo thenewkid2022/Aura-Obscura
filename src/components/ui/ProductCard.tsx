@@ -12,6 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../../constants/Colors';
 import { Typography } from '../../constants/Typography';
 import { Product } from '../../types';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface ProductCardProps {
   product: Product;
@@ -23,7 +24,8 @@ interface ProductCardProps {
 }
 
 const { width } = Dimensions.get('window');
-const cardWidth = (width - 48) / 2; // 2 columns with padding
+const isTablet = width > 768; // Tablet/Desktop breakpoint
+const cardWidth = isTablet ? (width - 72) / 4 : (width - 48) / 2; // 4 columns on tablet/desktop, 2 on mobile
 
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
@@ -33,6 +35,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   isFavorite = false,
   showDecantBadge = true,
 }) => {
+  const { t } = useLanguage();
+  
   const formatPrice = (price: number) => {
     return `${price.toFixed(2)} €`;
   };
@@ -53,22 +57,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     <View style={styles.badgesContainer}>
       {product.isNew && (
         <View style={[styles.badge, styles.newBadge]}>
-          <Text style={styles.badgeText}>Neu</Text>
+          <Text style={styles.badgeText}>{t.new}</Text>
         </View>
       )}
       {product.isLimited && (
         <View style={[styles.badge, styles.limitedBadge]}>
-          <Text style={styles.badgeText}>Limitiert</Text>
+          <Text style={styles.badgeText}>{t.limited}</Text>
         </View>
       )}
       {product.isExclusive && (
         <View style={[styles.badge, styles.exclusiveBadge]}>
-          <Text style={styles.badgeText}>Exklusiv</Text>
+          <Text style={styles.badgeText}>{t.exclusive}</Text>
         </View>
       )}
       {showDecantBadge && product.type === 'decant' && (
         <View style={[styles.badge, styles.decantBadge]}>
-          <Text style={styles.badgeText}>Decant</Text>
+          <Text style={styles.badgeText}>{t.decant}</Text>
         </View>
       )}
     </View>
@@ -78,7 +82,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     if (product.availability <= 0) {
       return (
         <View style={[styles.availabilityBadge, styles.outOfStockBadge]}>
-          <Text style={styles.availabilityText}>Ausverkauft</Text>
+          <Text style={styles.availabilityText}>{t.outOfStock}</Text>
         </View>
       );
     }
@@ -86,7 +90,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     if (product.availability <= 3) {
       return (
         <View style={[styles.availabilityBadge, styles.lowStockBadge]}>
-          <Text style={styles.availabilityText}>Nur noch {product.availability}</Text>
+          <Text style={styles.availabilityText}>{t.onlyLeft} {product.availability}</Text>
         </View>
       );
     }
@@ -104,7 +108,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     >
       <View style={styles.imageContainer}>
         <Image
-          source={{ uri: product.images[0] }}
+          source={typeof product.images[0] === 'string' 
+            ? { uri: product.images[0] } 
+            : product.images[0]}
           style={styles.image}
           resizeMode="cover"
         />
@@ -161,7 +167,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
           >
             <Ionicons name="add" size={20} color={Colors.white} />
-            <Text style={styles.addToCartText}>Zum Warenkorb</Text>
+            <Text style={styles.addToCartText}>{t.addToCart}</Text>
           </TouchableOpacity>
         )}
       </View>

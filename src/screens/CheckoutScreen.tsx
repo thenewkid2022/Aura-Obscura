@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -13,19 +13,21 @@ import { Colors } from '../constants/Colors';
 import { Typography } from '../constants/Typography';
 import { Button } from '../components/ui/Button';
 import { Address, PaymentMethod } from '../types';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface CheckoutScreenProps {
   navigation: any;
 }
 
 export const CheckoutScreen: React.FC<CheckoutScreenProps> = ({ navigation }) => {
+  const { t } = useLanguage();
   const [shippingAddress, setShippingAddress] = useState<Address>({
     firstName: '',
     lastName: '',
     street: '',
     city: '',
     postalCode: '',
-    country: 'Deutschland',
+    country: t.country,
     phone: '',
   });
   
@@ -35,7 +37,7 @@ export const CheckoutScreen: React.FC<CheckoutScreenProps> = ({ navigation }) =>
     street: '',
     city: '',
     postalCode: '',
-    country: 'Deutschland',
+    country: t.country,
     phone: '',
   });
   
@@ -48,7 +50,7 @@ export const CheckoutScreen: React.FC<CheckoutScreenProps> = ({ navigation }) =>
   const total = subtotal + shipping;
 
   const paymentMethods = [
-    { id: 'stripe', name: 'Kreditkarte', icon: 'card-outline' },
+    { id: 'stripe', name: t.paymentMethods.creditCard, icon: 'card-outline' },
     { id: 'apple-pay', name: 'Apple Pay', icon: 'logo-apple' },
     { id: 'paypal', name: 'PayPal', icon: 'logo-paypal' },
     { id: 'klarna', name: 'Klarna', icon: 'card-outline' },
@@ -76,7 +78,7 @@ export const CheckoutScreen: React.FC<CheckoutScreenProps> = ({ navigation }) =>
     
     for (const field of requiredFields) {
       if (!shippingAddress[field] || !billingAddress[field]) {
-        Alert.alert('Fehlende Angaben', 'Bitte füllen Sie alle Pflichtfelder aus.');
+        Alert.alert(t.missingFields, t.missingFieldsMessage);
         return false;
       }
     }
@@ -106,75 +108,75 @@ export const CheckoutScreen: React.FC<CheckoutScreenProps> = ({ navigation }) =>
       
       <View style={styles.row}>
         <View style={styles.halfWidth}>
-          <Text style={styles.label}>Vorname *</Text>
+          <Text style={styles.label}>{t.firstName} *</Text>
           <TextInput
             style={styles.input}
             value={address.firstName}
             onChangeText={(value) => handleAddressChange('firstName', value, isBilling)}
-            placeholder="Vorname"
+            placeholder={t.firstName}
             placeholderTextColor={Colors.textMuted}
           />
         </View>
         <View style={styles.halfWidth}>
-          <Text style={styles.label}>Nachname *</Text>
+          <Text style={styles.label}>{t.lastName} *</Text>
           <TextInput
             style={styles.input}
             value={address.lastName}
             onChangeText={(value) => handleAddressChange('lastName', value, isBilling)}
-            placeholder="Nachname"
+            placeholder={t.lastName}
             placeholderTextColor={Colors.textMuted}
           />
         </View>
       </View>
       
-      <Text style={styles.label}>Straße & Hausnummer *</Text>
+      <Text style={styles.label}>{t.street} *</Text>
       <TextInput
         style={styles.input}
         value={address.street}
         onChangeText={(value) => handleAddressChange('street', value, isBilling)}
-        placeholder="Musterstraße 123"
+        placeholder={t.street}
         placeholderTextColor={Colors.textMuted}
       />
       
       <View style={styles.row}>
         <View style={styles.halfWidth}>
-          <Text style={styles.label}>Stadt *</Text>
+          <Text style={styles.label}>{t.city} *</Text>
           <TextInput
             style={styles.input}
             value={address.city}
             onChangeText={(value) => handleAddressChange('city', value, isBilling)}
-            placeholder="Stadt"
+            placeholder={t.city}
             placeholderTextColor={Colors.textMuted}
           />
         </View>
         <View style={styles.halfWidth}>
-          <Text style={styles.label}>PLZ *</Text>
+          <Text style={styles.label}>{t.postalCode} *</Text>
           <TextInput
             style={styles.input}
             value={address.postalCode}
             onChangeText={(value) => handleAddressChange('postalCode', value, isBilling)}
-            placeholder="12345"
+            placeholder={t.postalCode}
             placeholderTextColor={Colors.textMuted}
             keyboardType="numeric"
           />
         </View>
       </View>
       
-      <Text style={styles.label}>Land</Text>
+      <Text style={styles.label}>{t.country}</Text>
       <TextInput
         style={styles.input}
         value={address.country}
         onChangeText={(value) => handleAddressChange('country', value, isBilling)}
-        placeholder="Deutschland"
+        placeholder={t.country}
         placeholderTextColor={Colors.textMuted}
       />
       
-      <Text style={styles.label}>Telefon</Text>
+      <Text style={styles.label}>{t.phone}</Text>
       <TextInput
         style={styles.input}
         value={address.phone}
         onChangeText={(value) => handleAddressChange('phone', value, isBilling)}
-        placeholder="+49 123 456789"
+        placeholder={t.phone}
         placeholderTextColor={Colors.textMuted}
         keyboardType="phone-pad"
       />
@@ -220,7 +222,7 @@ export const CheckoutScreen: React.FC<CheckoutScreenProps> = ({ navigation }) =>
 
   const renderOrderSummary = () => (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>Bestellübersicht</Text>
+      <Text style={styles.sectionTitle}>{t.orderSummary}</Text>
       
       <View style={styles.orderItem}>
         <Text style={styles.orderItemText}>Amouage Reflection Man (2x)</Text>
@@ -235,21 +237,21 @@ export const CheckoutScreen: React.FC<CheckoutScreenProps> = ({ navigation }) =>
       <View style={styles.divider} />
       
       <View style={styles.orderItem}>
-        <Text style={styles.orderItemText}>Zwischensumme</Text>
+        <Text style={styles.orderItemText}>{t.subtotal}</Text>
         <Text style={styles.orderItemPrice}>{formatPrice(subtotal)}</Text>
       </View>
       
       <View style={styles.orderItem}>
-        <Text style={styles.orderItemText}>Versand</Text>
+        <Text style={styles.orderItemText}>{t.shipping}</Text>
         <Text style={styles.orderItemPrice}>
-          {shipping === 0 ? 'Kostenlos' : formatPrice(shipping)}
+          {shipping === 0 ? t.free : formatPrice(shipping)}
         </Text>
       </View>
       
       <View style={styles.divider} />
       
       <View style={styles.orderItem}>
-        <Text style={styles.totalText}>Gesamt</Text>
+        <Text style={styles.totalText}>{t.total}</Text>
         <Text style={styles.totalPrice}>{formatPrice(total)}</Text>
       </View>
     </View>
@@ -271,12 +273,12 @@ export const CheckoutScreen: React.FC<CheckoutScreenProps> = ({ navigation }) =>
               color={useSameAddress ? Colors.secondary : Colors.textMuted}
             />
             <Text style={styles.sameAddressText}>
-              Rechnungsadresse ist identisch mit Lieferadresse
+              {t.sameAddress}
             </Text>
           </TouchableOpacity>
         </View>
         
-        {!useSameAddress && renderAddressForm('Rechnungsadresse', billingAddress, true)}
+        {!useSameAddress && renderAddressForm(t.billingAddress, billingAddress, true)}
         
         {renderPaymentMethods()}
         {renderOrderSummary()}
@@ -284,7 +286,7 @@ export const CheckoutScreen: React.FC<CheckoutScreenProps> = ({ navigation }) =>
       
       <View style={styles.footer}>
         <Button
-          title={isProcessing ? 'Wird verarbeitet...' : `Jetzt kaufen (${formatPrice(total)})`}
+          title={isProcessing ? t.processing : `${t.buyNow} (${formatPrice(total)})`}
           onPress={handlePayment}
           variant="primary"
           size="large"

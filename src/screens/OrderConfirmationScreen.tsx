@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../constants/Colors';
 import { Typography } from '../constants/Typography';
 import { Button } from '../components/ui/Button';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface OrderConfirmationScreenProps {
   navigation: any;
@@ -23,6 +24,7 @@ export const OrderConfirmationScreen: React.FC<OrderConfirmationScreenProps> = (
   navigation,
   route,
 }) => {
+  const { t } = useLanguage();
   const { orderId } = route.params;
 
   const handleContinueShopping = () => {
@@ -30,7 +32,7 @@ export const OrderConfirmationScreen: React.FC<OrderConfirmationScreenProps> = (
   };
 
   const handleViewOrders = () => {
-    navigation.navigate('Konto');
+    navigation.navigate('Profile');
   };
 
   return (
@@ -41,28 +43,28 @@ export const OrderConfirmationScreen: React.FC<OrderConfirmationScreenProps> = (
             <Ionicons name="checkmark-circle" size={80} color={Colors.success} />
           </View>
           
-          <Text style={styles.title}>Bestellung erfolgreich!</Text>
+          <Text style={styles.title}>{t.orderSuccess}</Text>
           <Text style={styles.subtitle}>
-            Vielen Dank für Ihren Kauf. Ihre Bestellung wird sorgfältig verpackt und versendet.
+            {t.orderSuccessSubtitle}
           </Text>
           
           <View style={styles.orderInfo}>
-            <Text style={styles.orderLabel}>Bestellnummer</Text>
+            <Text style={styles.orderLabel}>{t.orderNumber}</Text>
             <Text style={styles.orderNumber}>{orderId}</Text>
           </View>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Was passiert als Nächstes?</Text>
+          <Text style={styles.sectionTitle}>{t.nextSteps}</Text>
           
           <View style={styles.stepContainer}>
             <View style={styles.stepIcon}>
               <Ionicons name="time-outline" size={24} color={Colors.secondary} />
             </View>
             <View style={styles.stepContent}>
-              <Text style={styles.stepTitle}>Bestellung bestätigt</Text>
+              <Text style={styles.stepTitle}>{t.orderConfirmed}</Text>
               <Text style={styles.stepDescription}>
-                Sie erhalten eine Bestätigungs-E-Mail mit allen Details.
+                {t.orderConfirmedDesc}
               </Text>
             </View>
           </View>
@@ -72,9 +74,9 @@ export const OrderConfirmationScreen: React.FC<OrderConfirmationScreenProps> = (
               <Ionicons name="construct-outline" size={24} color={Colors.secondary} />
             </View>
             <View style={styles.stepContent}>
-              <Text style={styles.stepTitle}>Handverlesene Abfüllung</Text>
+              <Text style={styles.stepTitle}>{t.handpickedFilling}</Text>
               <Text style={styles.stepDescription}>
-                Unsere Experten füllen Ihre Decants sorgfältig aus Originalflakons ab.
+                {t.handpickedFillingDesc}
               </Text>
             </View>
           </View>
@@ -84,9 +86,9 @@ export const OrderConfirmationScreen: React.FC<OrderConfirmationScreenProps> = (
               <Ionicons name="car-outline" size={24} color={Colors.secondary} />
             </View>
             <View style={styles.stepContent}>
-              <Text style={styles.stepTitle}>Versand</Text>
+              <Text style={styles.stepTitle}>{t.shippingStep}</Text>
               <Text style={styles.stepDescription}>
-                Ihr Paket wird sicher verpackt und innerhalb von 1-2 Werktagen versendet.
+                {t.shippingStepDesc}
               </Text>
             </View>
           </View>
@@ -96,16 +98,16 @@ export const OrderConfirmationScreen: React.FC<OrderConfirmationScreenProps> = (
               <Ionicons name="mail-outline" size={24} color={Colors.secondary} />
             </View>
             <View style={styles.stepContent}>
-              <Text style={styles.stepTitle}>Tracking</Text>
+              <Text style={styles.stepTitle}>{t.tracking}</Text>
               <Text style={styles.stepDescription}>
-                Sie erhalten eine E-Mail mit dem Tracking-Link, sobald das Paket versendet wurde.
+                {t.trackingDesc}
               </Text>
             </View>
           </View>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Ihre Bestellung</Text>
+          <Text style={styles.sectionTitle}>{t.yourOrder}</Text>
           
           <View style={styles.orderItem}>
             <Text style={styles.orderItemText}>Amouage Reflection Man (2x)</Text>
@@ -120,20 +122,20 @@ export const OrderConfirmationScreen: React.FC<OrderConfirmationScreenProps> = (
           <View style={styles.divider} />
           
           <View style={styles.orderItem}>
-            <Text style={styles.orderItemText}>Versand</Text>
-            <Text style={styles.orderItemPrice}>Kostenlos</Text>
+            <Text style={styles.orderItemText}>{t.shippingCost}</Text>
+            <Text style={styles.orderItemPrice}>{t.free}</Text>
           </View>
           
           <View style={styles.orderItem}>
-            <Text style={styles.totalText}>Gesamt</Text>
+            <Text style={styles.totalText}>{t.total}</Text>
             <Text style={styles.totalPrice}>88,00 €</Text>
           </View>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Haben Sie Fragen?</Text>
+          <Text style={styles.sectionTitle}>{t.questions}</Text>
           <Text style={styles.contactText}>
-            Unser Kundenservice ist für Sie da. Kontaktieren Sie uns gerne per E-Mail oder über das Kontaktformular.
+            {t.contactText}
           </Text>
           
           <View style={styles.contactInfo}>
@@ -145,7 +147,7 @@ export const OrderConfirmationScreen: React.FC<OrderConfirmationScreenProps> = (
 
       <View style={styles.footer}>
         <Button
-          title="Weiter einkaufen"
+          title={t.continueShopping}
           onPress={handleContinueShopping}
           variant="primary"
           size="large"
@@ -153,7 +155,7 @@ export const OrderConfirmationScreen: React.FC<OrderConfirmationScreenProps> = (
         />
         
         <Button
-          title="Meine Bestellungen anzeigen"
+          title={t.viewOrders}
           onPress={handleViewOrders}
           variant="outline"
           size="medium"
